@@ -314,9 +314,9 @@ body {
         flex-wrap: wrap;
     }
     .input-address {
-        margin-top: 15px;
-        order: 5;
-        flex: 1;
+        margin-top: 20px;
+        order: 1;
+        flex: 0.9;
     }
     .promo {
         background-image: none;
