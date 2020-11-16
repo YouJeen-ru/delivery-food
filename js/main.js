@@ -24,6 +24,13 @@ let login = localStorage.getItem('LogDelivery')
 
 function toggleModalAuth() {
     modalAuth.classList.toggle('is-open')
+    logInInput.style.borderColor = ''
+    if (modalAuth.classList.contains('is-open')) {
+        disableScroll()
+    } else {
+        enableScroll()
+    }
+
 }
 
 
@@ -55,20 +62,32 @@ function notAuthorized() {
 
     function logIn(event) {
         event.preventDefault()
-        login = logInInput.value
+        if(logInInput.value.trim()) {
+            login = logInInput.value
+            localStorage.setItem('LogDelivery', login)
+            toggleModalAuth()
 
-        localStorage.setItem('LogDelivery', login)
 
-        toggleModalAuth()
-        buttonAuth.removeEventListener('click',toggleModalAuth)
-        closeAuth.removeEventListener('click',toggleModalAuth)
-        logInForm.removeEventListener('submit', logIn)
-        logInForm.reset()
-        chekAuth()
+            buttonAuth.removeEventListener('click',toggleModalAuth)
+            closeAuth.removeEventListener('click',toggleModalAuth)
+            logInForm.removeEventListener('submit', logIn)
+            logInForm.reset()
+            chekAuth()
+        }else {
+            logInInput.style.borderColor = '#ff0000'
+            logInInput.value = ''
+        }
+
     }
     buttonAuth.addEventListener('click',toggleModalAuth)
     closeAuth.addEventListener('click',toggleModalAuth)
     logInForm.addEventListener('submit', logIn)
+    modalAuth.addEventListener('click', function (e) {
+        if (e.target.classList.contains('is-open')) {
+            toggleModalAuth()
+
+        }
+    })
 
 
 
