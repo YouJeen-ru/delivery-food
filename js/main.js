@@ -1,4 +1,7 @@
 'use strict'
+import Swiper from 'https://unpkg.com/swiper/swiper-bundle.esm.browser.min.js'
+
+const RED_COLOR = '#ff0000'
 
 const cartButton = document.querySelector('#cart-button')
 const modal = document.querySelector('.modal')
@@ -19,6 +22,14 @@ const cardsMenu = document.querySelector('.cards-menu')
 
 
 let login = localStorage.getItem('LogDelivery')
+
+function validName(str) {
+    const regName =/^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$/
+    return regName.test(str)
+}
+
+
+
 
 
 function ModalToggle () {
@@ -65,7 +76,7 @@ function notAuthorized() {
 
     function logIn(event) {
         event.preventDefault()
-        if(logInInput.value.trim()) {
+        if(validName(logInInput.value)) {
             login = logInInput.value
             localStorage.setItem('LogDelivery', login)
             toggleModalAuth()
@@ -77,7 +88,7 @@ function notAuthorized() {
             logInForm.reset()
             chekAuth()
         }else {
-            logInInput.style.borderColor = '#ff0000'
+            logInInput.style.borderColor = RED_COLOR
             logInInput.value = ''
         }
 
@@ -159,20 +170,24 @@ function createCardGood() {
 
 function openGoods(event) {
     const target = event.target
-    const restaurant = target.closest('.card-restaurant')
-    if (restaurant) {
-        cardsMenu.textContent = ''
-        containerPromo.classList.add('hide')
-        restaurants.classList.add('hide')
-        menu.classList.remove('hide')
+
+    if (login) {
+        const restaurant = target.closest('.card-restaurant')
+        if (restaurant) {
+            cardsMenu.textContent = ''
+            containerPromo.classList.add('hide')
+            restaurants.classList.add('hide')
+            menu.classList.remove('hide')
 
 
-        createCardGood()
-        createCardGood()
-        createCardGood()
+            createCardGood()
+            createCardGood()
+            createCardGood()
+        }
     }
-
-
+    else {
+        toggleModalAuth()
+    }
 }
 
 
@@ -192,4 +207,20 @@ logo.addEventListener('click', function () {
 chekAuth()
 createCardRestaurant()
 
+
+
+// slider
+
+new Swiper('.swiper-container', {
+    sliderPerView: 1,
+    loop: true,
+    autoplay: true,
+    grabCursor: true,
+    effect: 'coverflow',
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+    },
+
+})
 
