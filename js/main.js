@@ -25,17 +25,18 @@ const restaurantRating = document.querySelector('.rating')
 const restaurantPrice = document.querySelector('.price')
 const restaurantCategory = document.querySelector('.category')
 
+const inputSearch = document.querySelector('.input-search')
+
 
 let login = localStorage.getItem('LogDelivery')
 
 const getData = async function (url) {
-    const respone = await fetch(url)
-    if (!respone.ok) {
-        throw new Error(`Ошибка по адресу ${url}, статус ошибка ${respone.status}`)
+    const response = await fetch(url)
+    if (!response.ok) {
+        throw new Error(`Ошибка по адресу ${url}, статус ошибка ${response.status}`)
     }
-    return await respone.json()
+    return await response.json()
 }
-
 
 
 const validName = function (str) {
@@ -128,10 +129,10 @@ function chekAuth() {
 }
 
 function createCardRestaurant({image, kitchen, name, price, stars, products, time_of_delivery: timeOfDelivery}) {
-const cardRestaurant = document.createElement('a')
+    const cardRestaurant = document.createElement('a')
     cardRestaurant.className = 'card card-restaurant'
-    cardRestaurant.products =products
-    cardRestaurant.info = { kitchen, name, price, stars }
+    cardRestaurant.products = products
+    cardRestaurant.info = {kitchen, name, price, stars}
 
 
     const card = `
@@ -152,13 +153,13 @@ const cardRestaurant = document.createElement('a')
                     </div>
                 
     `;
-cardRestaurant.insertAdjacentHTML('beforeend', card)
+    cardRestaurant.insertAdjacentHTML('beforeend', card)
     cardsRestaurants.insertAdjacentElement('beforeend', cardRestaurant)
 
 }
 
 
-function createCardGood({description, id, image, name, price,}) {
+function createCardGood({description, image, name, price,}) {
 
 
     const card = document.createElement('div')
@@ -199,13 +200,12 @@ function openGoods(event) {
             restaurants.classList.add('hide')
             menu.classList.remove('hide')
 
-            const { name, kitchen, price, stars } = restaurant.info
+            const {name, kitchen, price, stars} = restaurant.info
 
             restaurantTitle.textContent = name
             restaurantRating.textContent = stars
-            restaurantPrice.textContent = price
+            restaurantPrice.textContent = `От ${price} ₽`
             restaurantCategory.textContent = kitchen
-
 
 
             getData(`./db/${restaurant.products}`).then(function (data) {
@@ -231,6 +231,54 @@ function init() {
         restaurants.classList.remove('hide')
         menu.classList.add('hide')
     })
+
+    inputSearch.addEventListener('keypress', function (event) {
+
+        if (event.charCode === 13) {
+            const value = event.target.value.trim()
+
+            if (!value) {
+                event.target.style.backgroundColor = RED_COLOR
+                event.target.value = ''
+                setTimeout(function () {
+                    event.target.style.backgroundColor = ''
+                }, 1500)
+                return
+            }
+
+            getData('./db/partners.json')
+                .then(function (data) {
+                    return data.map(function (partner) {
+                        return partner.products
+                    })
+                })
+                .then(function (linkProducts) {
+                    cardsMenu.textContent = '';
+                    linkProducts.forEach(function (link) {
+                        getData(`./db/${link}`)
+                            .then(function (data) {
+
+                                const resultSearch = data.filter(function (item) {
+                                    const name = item.name.toLowerCase()
+                                    return name.includes(value.toLowerCase())
+                                })
+
+                                containerPromo.classList.add('hide')
+                                restaurants.classList.add('hide')
+                                menu.classList.remove('hide')
+
+
+                                restaurantTitle.textContent = 'Результат поиска'
+                                restaurantRating.textContent = ''
+                                restaurantPrice.textContent = ''
+                                restaurantCategory.textContent = 'разная кухня'
+                                resultSearch.forEach(createCardGood)
+                            })
+                    })
+                })
+        }
+    })
+
 
     chekAuth()
 
