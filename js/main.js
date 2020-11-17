@@ -71,6 +71,7 @@ function authorized() {
         buttonAuth.style.display = ''
         userName.style.display = ''
         buttonOut.style.display = ''
+        cartButton.style.display = ''
         buttonOut.removeEventListener('click', logOut)
         chekAuth()
 
@@ -79,7 +80,8 @@ function authorized() {
     userName.textContent = login
     buttonAuth.style.display = 'none'
     userName.style.display = 'inline'
-    buttonOut.style.display = 'block'
+    buttonOut.style.display = 'flex'
+    cartButton.style.display = 'flex'
     buttonOut.addEventListener('click', logOut)
 }
 
