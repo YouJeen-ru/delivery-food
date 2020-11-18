@@ -28,9 +28,24 @@ const modalBody = document.querySelector('.modal-body')
 const modalPrice = document.querySelector('.modal-pricetag')
 const buttonClearCart = document.querySelector('.clear-cart')
 
+
+
 let login = localStorage.getItem('LogDelivery')
 
-const cart = []
+const cart = JSON.parse(localStorage.getItem(`gloDelivery_${login}`)) || []
+
+
+
+function saveCart() {
+    localStorage.setItem(`gloDelivery_${login}`,JSON.stringify(cart))
+}
+
+function downloadCart() {
+    if (localStorage.getItem(`gloDelivery_${login}`)) {
+        const data = JSON.parse(localStorage.getItem(`gloDelivery_${login}`))
+        cart.push(...data)
+    }
+}
 
 const getData = async function (url) {
     const response = await fetch(url)
@@ -62,6 +77,12 @@ const toggleModalAuth = function () {
 
 }
 
+function returnMain() {
+    containerPromo.classList.remove('hide')
+    restaurants.classList.remove('hide')
+    menu.classList.add('hide')
+}
+
 
 function authorized() {
     console.log('Authorized')
@@ -69,6 +90,7 @@ function authorized() {
 
     function logOut() {
         login = null
+        cart.length = 0
         localStorage.removeItem('LogDelivery')
         buttonAuth.style.display = ''
         userName.style.display = ''
@@ -76,6 +98,7 @@ function authorized() {
         cartButton.style.display = ''
         buttonOut.removeEventListener('click', logOut)
         chekAuth()
+        returnMain()
 
     }
 
@@ -97,6 +120,7 @@ function notAuthorized() {
             login = logInInput.value
             localStorage.setItem('LogDelivery', login)
             toggleModalAuth()
+            downloadCart()
 
 
             buttonAuth.removeEventListener('click', toggleModalAuth)
@@ -247,6 +271,7 @@ function addToCart(event) {
 
 
     }
+    saveCart()
 
 }
 
@@ -271,6 +296,7 @@ modalBody.textContent = ''
         return result + (parseFloat(item.cost) * item.count)
     }, 0)
     modalPrice.textContent = totalPrice + ' ₽'
+    saveCart()
 }
 
 function changeCount(event) {
