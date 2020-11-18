@@ -322,11 +322,11 @@ function changeCount(event) {
 
 }
 
+
 function init() {
     getData('./db/partners.json').then(function (data) {
         data.forEach(createCardRestaurant)
     })
-
 
     modalBody.addEventListener('click', changeCount)
     cartButton.addEventListener('click', function (){
