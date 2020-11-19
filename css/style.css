@@ -46,19 +46,14 @@ button {
 
 .input-address {
     width: 100%;
-    background-image: url(../img/icon/home.svg);
+    background-image: url(../img/icon/search.svg);
 }
 
 .search {
     margin-left: auto;
 }
 
-.input-search {
-    width: 300px;
-    background-image: url(../img/icon/search.svg);
 
-
-}
 
 .buttons {
     display: flex;
